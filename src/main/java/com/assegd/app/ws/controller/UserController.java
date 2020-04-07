@@ -27,7 +27,7 @@ public class UserController {
         List<UserRest> returnValue = new ArrayList<>();
 
         List<UserDto> users = userService.getUsers(page,limit);
-
+  //changes from the newportit laptop
         for (UserDto userDto: users) {
             UserRest userModel = new UserRest();
             BeanUtils.copyProperties(userDto, userModel);
