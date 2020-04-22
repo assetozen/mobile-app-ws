@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication
 public class MobileAppWsApplication extends SpringBootServletInitializer {
 
+	// this branch is created for newportitlaptop side project updates  
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(MobileAppWsApplication.class);
