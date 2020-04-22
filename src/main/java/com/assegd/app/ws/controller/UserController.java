@@ -5,6 +5,7 @@ import com.assegd.app.ws.service.UserService;
 import com.assegd.app.ws.shared.dto.UserDto;
 import com.assegd.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.assegd.app.ws.ui.model.response.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,16 +27,15 @@ public class UserController {
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "limit", defaultValue = "25") int limit) {
         List<UserRest> returnValue = new ArrayList<>();
 
-        List<UserDto> users = userService.getUsers(page,limit);
-  //changes from the newportit laptop
-        for (UserDto userDto: users) {
+        List<UserDto> users = userService.getUsers(page, limit);
+        //changes from the newportit laptop
+        for (UserDto userDto : users) {
             UserRest userModel = new UserRest();
             BeanUtils.copyProperties(userDto, userModel);
             returnValue.add(userModel);
         }
         return returnValue;
     }
-
 
 
     @GetMapping(path = "/{id}",
@@ -52,20 +52,21 @@ public class UserController {
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
-        UserRest returnValue = new UserRest();
 
         /* used to test exception handling*/
         /*if (userDetails.getFirstName().isEmpty())
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
-        if (userDetails.getLastName().isEmpty()) throw new NullPointerException("The object is null");
-        */
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails, userDto);
+        if (userDetails.getLastName().isEmpty()) throw new NullPointerException("The object is null");*/
+
+        // Copies object content using BeanUtils
+        //UserDto userDto = new UserDto(); BeanUtils.copyProperties(userDetails, userDto);
+        //Copies object content using ModelMapper
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
         UserDto createdDto = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdDto, returnValue);
-
-        
+        //BeanUtils.copyProperties(createdDto, returnValue);
+        UserRest returnValue = modelMapper.map(createdDto, UserRest.class);
         return returnValue;
     }
 
