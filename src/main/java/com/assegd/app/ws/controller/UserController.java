@@ -65,7 +65,6 @@ public class UserController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
 
         /* used to test exception handling*/
@@ -159,5 +158,24 @@ public class UserController {
         addressesRest.add(addressesLink);
 
         return new EntityModel<>(addressesRest);
+    }
+
+    //http:localhost:8080/mobile-app-ws/user/email-verification?token=sdfsdf
+    @GetMapping(path = "/{/email-verification}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token)
+    {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
+
+        boolean isVerified = userService.verifyEmailToken(token);
+
+        if (isVerified){
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }else {
+            returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+        }
+
+        return returnValue;
     }
 }

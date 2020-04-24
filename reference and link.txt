@@ -8,7 +8,27 @@ Steps to start AWS and the Tomcat inside it, and mysql server
 - go to the location of the downloaded PEM file and cmd/gitbash in 
 	write this code which is( txt_file PublicDNS or IP Address of ur ecs)
 	ssh -i PhotoAppEC2Server.pem ec2-user@ec2-18-188-203-213.us-east-2.compute.amazonaws.com
-				     ec2-3-21-56-145.us-east-2.compute.amazonaws.com
-				     ec2-3-21-56-145.us-east-2.compute.amazonaws.com
-				     ec2-3-22-63-32.us-east-2.compute.amazonaws.com
-				     ec2-3-22-63-32.us-east-2.compute.amazonaws.com
+	    - click yes
+		- if it says that the permission is denied then
+		    -chmod 400 PhotoAppEC2Server.pem
+
+
+
+To Start, stop and restart tomcat
+    -> sudo service tomcat8 start
+    -> sudo service tomcat8 stop
+    -> sudo service tomcat8 restart
+
+To Start, stop and restart  and check status of mysql
+    -> sudo service mysqld start
+    -> sudo service mysqld status
+    -> sudo service mysqld stop
+
+Mysql root user and password root root
+dns/manager/html user manager password manager-password
+Mysql user -> u: assegd p: assegd
+
+Amazons simple email service(SES)
+account-verfication-user
+        AWS Access KEy ID ->     AKIATL2DUERXDY3OAJ5U
+        AWS secret-access-key -> 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
