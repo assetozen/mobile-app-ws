@@ -1,0 +1,7 @@
+this file has been created by the origin branch changesfromnewportitlaptop
+
+which has been set as a tracking branch to the local newportitlaptop branch by using 
+-> git checkout newportitlaptop
+-> git branch -u origin/changesfromnewportitlaptop  
+      - which sets the changesfromnewportitlaptop origin branch to be the upstream of the local newportitlaptop branch
+ 
