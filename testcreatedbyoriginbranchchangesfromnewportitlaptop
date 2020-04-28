@@ -9,5 +9,5 @@ which has been set as a tracking branch to the local newportitlaptop branch by u
 -> To push to the branch(local) of the same name on the remote, use
        git push origin HEAD
 -> To push to the branch(local) of the branch which alredy exists the remote, use
-       git push origin HEAD nameoftheoriginbranch(eg. changesfromnewportitlaptop)
+       git push origin HEAD:nameoftheoriginbranch(eg. changesfromnewportitlaptop)
  
