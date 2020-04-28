@@ -94,9 +94,11 @@ public class AmazonSES {
     {
         boolean returnValue = false;
 
+        System.setProperty("aws.accessKeyId", "AKIATL2DUERXDY3OAJ5U");
+        System.setProperty("aws.secretKey", "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");
         AmazonSimpleEmailService client =
                 AmazonSimpleEmailServiceClientBuilder.standard()
-                        .withRegion(Regions.US_EAST_1).build();
+                        .withRegion(Regions.EU_CENTRAL_1).build();
 
         String htmlBodyWithToken = PASSWORD_RESET_HTMLBODY.replace("$tokenValue", token);
         htmlBodyWithToken = htmlBodyWithToken.replace("$firstName", firstName);
