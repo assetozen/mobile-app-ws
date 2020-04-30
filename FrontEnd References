@@ -1,0 +1,23 @@
+To Debug front end
+  -> open the url on a browser
+        -> Example of a page "http://localhost:8080/verification-service/password-reset.html?token=12121"
+                - with two text fields and submit button to check the passwords
+
+
+                1. right click on page "inspect" (untersuchen)
+                2. If chrome, go to "sources"
+                            ->inside the project you will find the page name
+                                    -> click on it and on the right side the page soucecode will be opened
+                                        - put breakpoint to inspect the status of the code
+                                    -> put the passwords and click on submit and the "onclick" method will be triggered and breakpoint can be inspected
+                            -> on the right side of the console page
+                                        -there are list of lines to show for example in the "Local"
+                                                - response of the page and values of each parameter
+  -> To check the status or response of a page after running the whole code
+                -> in the inpect page go to "Network" and click on the page
+                        - preview will show us the page
+                        - response will show us the html code of the page
+                        - and so on
+
+
+

@@ -5,6 +5,8 @@ import com.assegd.app.ws.service.AddressService;
 import com.assegd.app.ws.service.UserService;
 import com.assegd.app.ws.shared.dto.AddressDTO;
 import com.assegd.app.ws.shared.dto.UserDto;
+import com.assegd.app.ws.ui.model.request.PasswordResetModel;
+import com.assegd.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.assegd.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.assegd.app.ws.ui.model.response.*;
 import org.modelmapper.ModelMapper;
@@ -124,7 +126,7 @@ public class UserController {
             }.getType();
             addressesListRestModel = new ModelMapper().map(addressesDTO, listType);
 
-            for (AddressesRest addressRestModel: addressesListRestModel) {
+            for (AddressesRest addressRestModel : addressesListRestModel) {
                 Link addressLink = linkTo(methodOn(UserController.class).getUserAddresses(id)).withSelfRel();
                 Link userLink = linkTo(UserController.class).slash(id).withRel("user");
                 Link userLink_2 = linkTo(methodOn(UserController.class).getUser(id)).withRel("user_2");
@@ -147,7 +149,7 @@ public class UserController {
         //Link addressesLink = linkTo(UserController.class).slash(userId).slash("addresses").withRel("addresses");
 
         //Using MethodOn to minimize hardcoding "addresses" of addressLink
-        Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(userId,addressId)).withSelfRel();
+        Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(userId, addressId)).withSelfRel();
         Link userLink = linkTo(UserController.class).slash(userId).withRel("user");
         Link addressesLink = linkTo(methodOn(UserController.class).getUserAddresses(userId)).withRel("addresses");
 
@@ -160,22 +162,57 @@ public class UserController {
         return new EntityModel<>(addressesRest);
     }
 
-    //http:localhost:8080/mobile-app-ws/user/email-verification?token=sdfsdf
-    @GetMapping(path = "/{/email-verification}",
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token)
-    {
+    //http://localhost:8080/mobile-app-ws/users/email-verification?token=sdfsdf
+    @GetMapping(path = "/email-verification",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    //produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}) // XML was deleted for email-verification test purpose
+    public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
 
         boolean isVerified = userService.verifyEmailToken(token);
 
-        if (isVerified){
+        if (isVerified) {
             returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
-        }else {
+        } else {
             returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
         }
 
         return returnValue;
+    }
+
+    // http://localhost:8080/mobile-app-ws/users/password-reset-request
+    @PostMapping(path = "/password-reset-request",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public OperationStatusModel requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+
+        returnValue.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+        returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+
+        if (operationResult) {
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+
+        return returnValue;
+    }
+
+    @PostMapping(path = "/password-reset",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public OperationStatusModel resetPassword(@RequestBody PasswordResetModel passwordResetModel) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+        boolean operationResult = userService.resetPassword(
+                passwordResetModel.getToken(),
+                passwordResetModel.getPassword());
+        returnValue.setOperationName(RequestOperationName.PASSWORD_RESET.name());
+        returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+
+        if (operationResult) {
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+
+        return  returnValue;
     }
 }

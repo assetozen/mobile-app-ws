@@ -32,3 +32,7 @@ Amazons simple email service(SES)
 account-verfication-user
         AWS Access KEy ID ->     AKIATL2DUERXDY3OAJ5U
         AWS secret-access-key -> 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
+
+AWS Regions
+    EC2             ->  US_EAST_2  (US East Ohio)
+    Credential(SES) ->  EU_CENTRAL_1 (frankfurt)
