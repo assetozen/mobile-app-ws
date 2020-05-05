@@ -31,11 +31,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_URL)
                 .permitAll()
+                .antMatchers(SecurityConstants.H2_CONSOLE)
+                .permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(getAuthenticationFilter())
                 .addFilter(new AuthorizationFilter(authenticationManager()))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //To disable frame options:- which prevents browser to load page and to open up in browser window
+        //simply use it while using the h2 database for testing purposes, comment it before pushing ur changes to GIT
+        http.headers().frameOptions().disable();
     }
 
     @Override
