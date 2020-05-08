@@ -31,6 +31,7 @@ import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.metho
 
 @RestController
 @RequestMapping("/users") // http://localhost:8080/users
+//@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:8084"}) //allows CORS sent from other domains or ajax requests
 public class UserController {
 
     @Autowired

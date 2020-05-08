@@ -27,6 +27,8 @@ public class UserRepositoryTest {
 
     boolean recordsCreated = false;
 
+    String userId = "1a2b3c";
+
     @BeforeEach
     void setup() throws Exception {
         if (!recordsCreated)
@@ -109,8 +111,41 @@ public class UserRepositoryTest {
     @Test
     final void testUpdateUserEmailVerificationStatus() {
         boolean newEmailVerificationStatus = true;
-        userRepository.updateUserEmailVerificationStatus(newEmailVerificationStatus, "1a2b3c");
-        UserEntity storedUserDetails = userRepository.findByUserId("1a2b3c");
+        userRepository.updateUserEmailVerificationStatus(newEmailVerificationStatus, userId);
+        UserEntity storedUserDetails = userRepository.findByUserId(userId);
+        boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
+
+        assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
+    }
+
+    @Test
+    final void testFindUserEntityByUserId(){
+        UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
+        assertNotNull(userEntity);
+        assertTrue(userEntity.getUserId().equals(userId));
+    }
+
+    @Test
+    final void testGetUserEntityFullNameById(){
+        List<Object[]> users = userRepository.getUserEntityFullNameById(userId);
+
+        assertNotNull(users);
+        assertTrue(users.size() == 1);
+
+        Object[] user = users.get(0);
+
+        String userFirstName = String.valueOf(user[0]);
+        String userLastName = String.valueOf(user[1]);
+
+        assertNotNull(userFirstName);
+        assertNotNull(userLastName);
+    }
+
+    @Test
+    final void testUpdateUserEntityEmailVerificationStatus() {
+        boolean newEmailVerificationStatus = false;
+        userRepository.updateUserEntityEmailVerificationStatus(newEmailVerificationStatus, userId);
+        UserEntity storedUserDetails = userRepository.findByUserId(userId);
         boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
 
         assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
