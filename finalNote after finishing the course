@@ -1,0 +1,14 @@
+--------------------- parts which didnt function ---------
+- AWS EC2
+        - accessing mobile-app-ws from amazon is not working after deploying the WAR
+- Some tests are failing
+        - Repository test are failing when running together so i disabled the whole test calss of Repository
+
+- In postman when trying to get a single user data, it is displaying lots of userdetails instead of a single user data
+    - unable to parse json is the error.
+
+
+
+
+
+
