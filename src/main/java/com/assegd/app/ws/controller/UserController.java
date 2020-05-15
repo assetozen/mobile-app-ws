@@ -3,6 +3,7 @@ package com.assegd.app.ws.controller;
 import com.assegd.app.ws.exceptions.UserServiceException;
 import com.assegd.app.ws.service.AddressService;
 import com.assegd.app.ws.service.UserService;
+import com.assegd.app.ws.shared.Roles;
 import com.assegd.app.ws.shared.dto.AddressDTO;
 import com.assegd.app.ws.shared.dto.UserDto;
 import com.assegd.app.ws.ui.model.request.PasswordResetModel;
@@ -20,6 +21,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +31,8 @@ import javax.annotation.Resources;
 import javax.websocket.server.PathParam;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.ControllerLinkBuilder.linkTo;
@@ -64,6 +70,7 @@ public class UserController {
     }
 
 
+    @PostAuthorize(("hasRole('ADMIN') or returnObject.userId == principal.userId"))
     @ApiOperation(value = "${userController.GetUser.ApiOperation.Value}",
             notes = "${userController.GetUser.ApiOperation.Notes}")
     @ApiImplicitParams({
@@ -96,6 +103,8 @@ public class UserController {
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
+        userDto.setRoles(new HashSet<>(Arrays.asList(Roles.ROLE_USER.name())));
+
         UserDto createdDto = userService.createUser(userDto);
         //BeanUtils.copyProperties(createdDto, returnValue);
         UserRest returnValue = modelMapper.map(createdDto, UserRest.class);
@@ -122,11 +131,15 @@ public class UserController {
         return returnValue;
     }
 
+
+     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
+    //@PreAuthorize("hasAuthority('DELETE_AUTHORITY')") //"hasRole('ADMIN')"
+    //@Secured("ROLE_ADMIN")
+    @DeleteMapping(path = "{id}",
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     @ApiImplicitParams({
             @ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
     })
-    @DeleteMapping(path = "{id}",
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public OperationStatusModel deleteUser(@PathVariable String id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());

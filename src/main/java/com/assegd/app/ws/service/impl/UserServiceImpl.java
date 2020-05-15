@@ -2,9 +2,12 @@ package com.assegd.app.ws.service.impl;
 
 import com.assegd.app.ws.exceptions.UserServiceException;
 import com.assegd.app.ws.io.entity.PasswordResetTokenEntity;
+import com.assegd.app.ws.io.entity.RoleEntity;
 import com.assegd.app.ws.io.entity.UserEntity;
 import com.assegd.app.ws.io.repositories.PasswordResetTokenRepository;
+import com.assegd.app.ws.io.repositories.RoleRepository;
 import com.assegd.app.ws.io.repositories.UserRepository;
+import com.assegd.app.ws.security.UserPrincipal;
 import com.assegd.app.ws.service.UserService;
 import com.assegd.app.ws.shared.AmazonSES;
 import com.assegd.app.ws.shared.Utils;
@@ -26,6 +29,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -46,9 +51,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     AmazonSES amazonSES;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @Override
     public UserDto createUser(UserDto user) {
-        if (userRepository.findByEmail(user.getEmail()) != null) throw new UserServiceException("Record already exists");
+        if (userRepository.findByEmail(user.getEmail()) != null)
+            throw new UserServiceException("Record already exists");
 
         for (int i = 0; i < user.getAddresses().size(); i++) {
             AddressDTO address = user.getAddresses().get(i);
@@ -66,6 +75,17 @@ public class UserServiceImpl implements UserService {
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
         userEntity.setEmailVerificationStatus(false);
+
+        //set Roles
+        Collection<RoleEntity> roleEntities = new HashSet<>();
+        for (String role : user.getRoles()) {
+            RoleEntity roleEntity = roleRepository.findByName(role);
+            if (roleEntity != null) {
+                roleEntities.add(roleEntity);
+            }
+        }
+
+        userEntity.setRoles(roleEntities);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
@@ -170,8 +190,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = userRepository.findByEmail(email);
 
-        if (userEntity == null)
-        {
+        if (userEntity == null) {
             return returnValue;
         }
 
@@ -193,13 +212,13 @@ public class UserServiceImpl implements UserService {
     public boolean resetPassword(String token, String password) {
         boolean returnValue = false;
 
-        if (utils.hasTokenExpired(token)){
-            return  returnValue;
+        if (utils.hasTokenExpired(token)) {
+            return returnValue;
         }
 
         PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
 
-        if (passwordResetTokenEntity == null){
+        if (passwordResetTokenEntity == null) {
             return returnValue;
         }
 
@@ -212,8 +231,7 @@ public class UserServiceImpl implements UserService {
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         //Verify if password was saved successfully
-        if (savedUserEntity != null && savedUserEntity.getEncryptedPassword().equalsIgnoreCase(encodedPassword))
-        {
+        if (savedUserEntity != null && savedUserEntity.getEncryptedPassword().equalsIgnoreCase(encodedPassword)) {
             returnValue = true;
         }
 
@@ -228,8 +246,11 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) throw new UsernameNotFoundException(email);
 
+        return new UserPrincipal(userEntity);
+//        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
+//                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
+
+
         //return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(),
-                userEntity.getEmailVerificationStatus(), true, true, true, new ArrayList<>());
     }
 }

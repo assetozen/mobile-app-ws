@@ -1,0 +1,21 @@
+
+------------------ Stash ------------------
+# Assume the latest commit was already done
+# start working on the next patch, and discovered I was missing something
+
+# stash away the current mess I made
+git stash save
+
+# some changes in the working dir
+
+# and now add them to the last commit:
+git add -u
+git commit --amend
+
+# back to work!
+git stash pop
+
+# if stashed for example twice then check the stash lists and pop twice
+git stash list
+git stash pop
+git stash pop
