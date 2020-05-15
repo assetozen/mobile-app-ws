@@ -8,6 +8,18 @@
     - unable to parse json is the error.
 
 
+ ------------------------- some sql comannds usesed while implementing roles and authorities
+ SELECT * FROM USERS ;
+ select * from users_roles;
+ select * from roles;
+ select * from roles_authorities;
+ select * from authorities;
+
+
+-------------------------------- H2 in memory database is active and MySQL server is commented-----
+- if needed enable the mySQL server and save data constantly.
+
+
 
 
 
