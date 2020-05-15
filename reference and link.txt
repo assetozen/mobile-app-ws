@@ -13,6 +13,8 @@ Steps to start AWS and the Tomcat inside it, and mysql server
 		    -chmod 400 PhotoAppEC2Server.pem
 
 
+to check tomcat
+    ps -ef | grep tomcat
 
 To Start, stop and restart tomcat
     -> sudo service tomcat8 start

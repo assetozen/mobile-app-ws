@@ -74,7 +74,8 @@ public class UserServiceImpl implements UserService {
         UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
 
         //Send an email message to user to verify their email address
-        amazonSES.verifyEmail(returnValue);
+        //will be commented when testing create users with non existing email addresses
+        //amazonSES.verifyEmail(returnValue);
 
         return returnValue;
     }
