@@ -7,6 +7,24 @@
 - In postman when trying to get a single user data, it is displaying lots of userdetails instead of a single user data
     - unable to parse json is the error.
 
+- some tests are failing because "onApplicationEvent(ApplicationReadyEvent event)" supposed to run before the application starts and the tests are running without
+getting any info from this method and "for example create user always fails because there is no role assigned to the new user."
+there should be a way to assign a role to user befoer this test method starts so that user can have a role.
+        - for UserServiceImpl test class
+                - user role is has been assigned before the test and it is working properly
+
+
+ ------------------------- some sql comannds usesed while implementing roles and authorities
+ SELECT * FROM USERS ;
+ select * from users_roles;
+ select * from roles;
+ select * from roles_authorities;
+ select * from authorities;
+
+
+-------------------------------- H2 in memory database is active and MySQL server is commented-----
+- if needed enable the mySQL server and save data constantly.
+
 
  ------------------------- some sql comannds usesed while implementing roles and authorities
  SELECT * FROM USERS ;
