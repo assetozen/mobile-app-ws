@@ -29,7 +29,14 @@ To Start, stop and restart  and check status of mysql
 Mysql root user and password root root
 dns/manager/html user manager password manager-password
 Mysql user -> u: assegd p: assegd
+---------------------------------------- to access the apache tomcat page in AWS---------------
+open any browser
+    dns:8080/manager/html
+        user: manager
+        pas: manager-password
+- this will open the apache tomcat page and you can see the deployed war files of your projects
 
+------------------------------------------------------------------------------------------------
 Amazons simple email service(SES)
 account-verfication-user
         AWS Access KEy ID ->     AKIATL2DUERXDY3OAJ5U
